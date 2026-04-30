@@ -1,34 +1,28 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
-  "name": "Metaphysical Labs Docs",
-  "description": "Simple documentation for using Metaphysical Labs to manage 3D manual projects, assets, messages, revisions, and account access.",
+  "theme": "luma",
+  "name": "Metaphysical Studio Docs",
+  "description": "Simple documentation for using Metaphysical Studio to manage 3D manual projects, assets, messages, revisions, and account access.",
   "colors": {
-    "primary": "#38BDF8",
-    "light": "#E0F2FE",
-    "dark": "#0EA5E9"
+    "primary": "#FD936E",
+    "light": "#FAFAFB",
+    "dark": "#8181FF"
   },
   "appearance": {
     "default": "light",
     "strict": false
   },
   "fonts": {
-    "heading": {
-      "family": "DM Sans",
-      "weight": 700
-    },
-    "body": {
-      "family": "DM Sans",
-      "weight": 400
-    }
+    "family": "Poppins",
+    "weight": 500,
+    "format": "woff"
   },
   "navigation": {
     "groups": [
       {
         "group": "Start Here",
         "pages": [
-          "index",
-          "getting-started"
+          "index"
         ]
       },
       {
@@ -40,5 +34,13 @@
         ]
       }
     ]
-  }
+  },
+  "logo": {
+    "light": "/images/floweroflife.svg",
+    "dark": "/images/floweroflife.svg"
+  },
+  "background": {
+    "decoration": "grid"
+  },
+  "favicon": "/images/floweroflife.svg"
 }
