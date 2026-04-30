@@ -1,0 +1,57 @@
+---
+title: "Metaphysical Animator Dashboard"
+description: "Build interactive 3D assembly guides from GLB models — upload, animate, and publish step-by-step cinematic viewers for your products."
+---
+
+## What is the Metaphysical Animator Dashboard?
+
+The Metaphysical Animator Dashboard is a web-based tool that lets you turn 3D GLB files into interactive, step-by-step assembly guides. Upload a model, define animation steps on a timeline, list the tools and parts required for each step, control object visibility per step, then publish a polished viewer your end users can follow.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Upload your first GLB and publish a viewer in minutes.
+  </Card>
+  <Card title="GLB requirements" icon="cube" href="/guides/glb-requirements">
+    Make sure your model passes pipeline validation before you upload.
+  </Card>
+  <Card title="Timeline steps" icon="timeline" href="/guides/timeline-steps">
+    Map frame ranges to named assembly steps with camera positions.
+  </Card>
+  <Card title="API reference" icon="code" href="/api-reference/introduction">
+    Integrate the viewer project API into your own tooling.
+  </Card>
+</CardGroup>
+
+## How it works
+
+<Steps>
+  <Step title="Prepare your GLB">
+    Export your 3D model from Blender as a `.glb` file with a single animated camera track. The dashboard validates the file before ingesting it.
+  </Step>
+  <Step title="Upload and analyze">
+    Drag the file into the **Pipeline GLB Ingest** dialog. The validator checks binary structure, materials, textures, and camera animations, then shows you a pass/fail report with Blender fix guidance.
+  </Step>
+  <Step title="Build the timeline">
+    Use the timeline editor to mark start and end frames for each assembly step. Add titles, descriptions, camera overrides, and color labels.
+  </Step>
+  <Step title="Assign parts and tools">
+    Tag each step with the physical parts and tools the user needs. The viewer surfaces these in a side panel during playback.
+  </Step>
+  <Step title="Control object visibility">
+    Show or hide individual mesh objects per step so the viewer only highlights the components relevant to that step.
+  </Step>
+  <Step title="Preview and deploy">
+    Generate a time-limited preview link to review the result, then promote it to the live viewer URL when you are ready.
+  </Step>
+</Steps>
+
+## Key concepts
+
+| Term | Description |
+|------|-------------|
+| **Project** | A `companyId` + `productId` pair that owns a viewer's draft, releases, and assets. |
+| **Draft** | The current unpublished state of a project — timeline steps, visibility assignments, tools, and parts. |
+| **Release** | A snapshot of a draft that has been built into a deployable manifest. |
+| **Preview** | A time-limited URL generated from a release for review before going live. |
+| **Live** | The publicly accessible viewer URL permanently associated with a project. |
+| **Manifest** | The JSON artifact the viewer runtime reads to render the correct model, steps, and metadata. |

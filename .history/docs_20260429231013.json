@@ -1,0 +1,107 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "venus",
+  "name": "Metaphysical Animator Dashboard",
+  "colors": {
+    "primary": "#38bdf8",
+    "light": "#7dd3fc",
+    "dark": "#0ea5e9"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "index",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Working with 3D models",
+            "pages": [
+              "guides/glb-requirements",
+              "guides/uploading-models"
+            ]
+          },
+          {
+            "group": "Building your viewer",
+            "pages": [
+              "guides/timeline-steps",
+              "guides/parts-and-tools",
+              "guides/visibility-control"
+            ]
+          },
+          {
+            "group": "Publishing",
+            "pages": [
+              "guides/preview-and-deploy",
+              "guides/viewer-settings"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Viewer project",
+            "pages": [
+              "api-reference/viewer-project/get-status",
+              "api-reference/viewer-project/get-draft",
+              "api-reference/viewer-project/save-draft",
+              "api-reference/viewer-project/list-revisions",
+              "api-reference/viewer-project/list-releases",
+              "api-reference/viewer-project/create-preview",
+              "api-reference/viewer-project/deploy-live"
+            ]
+          },
+          {
+            "group": "Assets",
+            "pages": [
+              "api-reference/assets/list-assets",
+              "api-reference/assets/upload-intent",
+              "api-reference/assets/complete-upload",
+              "api-reference/assets/get-asset"
+            ]
+          },
+          {
+            "group": "Viewer manifest",
+            "pages": [
+              "api-reference/viewer-manifest/get-manifest"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/metaphysicaljet/Metaphysical-Animator-Dashboard",
+          "icon": "github"
+        }
+      ]
+    }
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/metaphysicaljet/Metaphysical-Animator-Dashboard"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/metaphysicaljet/Metaphysical-Animator-Dashboard"
+    }
+  }
+}
