@@ -40,7 +40,10 @@
     "dark": "/images/floweroflife.svg"
   },
   "background": {
-    "decoration": ""
+    "color": {
+      "light": "#FFFFFF",
+      "dark": "#000000"
+    }
   },
   "favicon": "/images/floweroflife.svg"
 }
