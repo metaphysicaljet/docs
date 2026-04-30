@@ -1,0 +1,126 @@
+---
+title: "Quickstart"
+description: "Upload a GLB model, build an assembly timeline, and publish your first viewer."
+---
+
+This guide walks you through creating a complete viewer project from scratch — from preparing your GLB file to sharing a live URL.
+
+## Before you start
+
+You need:
+- A `.glb` file exported from Blender with at least one animated camera track
+- Access to the Animator Dashboard (a valid account with editor or admin permissions on the project)
+
+<Note>
+  If your GLB does not yet have a camera animation, see [GLB requirements](/guides/glb-requirements) for the Blender export settings the pipeline expects.
+</Note>
+
+## Step 1 — Upload your model
+
+<Steps>
+  <Step title="Open the GLB ingest dialog">
+    In the dashboard header, click the **Upload Model** button to open the **Pipeline GLB Ingest** dialog.
+  </Step>
+  <Step title="Select or drag your file">
+    Drag a `.glb` file onto the drop zone, or click **Choose GLB file** to browse. The file must use the `.glb` extension (binary glTF format).
+  </Step>
+  <Step title="Review the validation report">
+    The analyzer runs five pipeline checks in sequence:
+
+    1. **Reading file** — verifies the file can be read as binary data
+    2. **Validating binary** — checks the GLB header and chunk structure
+    3. **Parsing scene** — loads the scene graph using the glTF runtime
+    4. **Applying pipeline rules** — validates materials, textures, camera animations, and extensions
+    5. **Validation complete** — issues a `pass` or `fail` result
+
+    A `pass` result enables the **Load Into Viewer** button.
+  </Step>
+  <Step title="Load the model">
+    Click **Load Into Viewer**. The model appears in the 3D viewport and the timeline editor becomes active.
+  </Step>
+</Steps>
+
+## Step 2 — Define timeline steps
+
+<Steps>
+  <Step title="Open the timeline editor">
+    The timeline editor appears at the bottom of the viewport. It shows the full frame range of your model's animation.
+  </Step>
+  <Step title="Add a step">
+    Click **Add Step** (or drag the step boundary handles) to mark a frame range. Each step needs:
+    - A **name** displayed in the viewer
+    - A **start frame** and **end frame** from the animation
+  </Step>
+  <Step title="Set an optional camera override">
+    For each step you can pin a specific camera position and target so the viewer automatically focuses the right part of the model.
+  </Step>
+  <Step title="Repeat for all steps">
+    Add as many steps as needed. Steps are ordered by their `order` field — you can reorder them in the editor.
+  </Step>
+</Steps>
+
+<Tip>
+  Keep step names short — they appear in the step controls bar at the bottom of the viewer. Use the **stepText** field for longer descriptions.
+</Tip>
+
+## Step 3 — Assign parts and tools
+
+1. Open the **Parts** panel from the floating toolbar.
+2. For each step, select the parts the user needs to have on hand.
+3. Open the **Tools** panel and assign the required tools.
+
+Parts and tools appear in side panels when the user navigates to that step in the live viewer.
+
+## Step 4 — Control object visibility
+
+1. Open the **Visibility** panel.
+2. For each step, toggle individual mesh objects to **shown** or **hidden**.
+
+Objects marked as hidden for a step are not rendered when the viewer is at that step, focusing the user's attention on the relevant components.
+
+## Step 5 — Save your draft
+
+Click **Save** in the toolbar. The dashboard sends your timeline steps, visibility assignments, tools, and parts to the server as a new draft revision.
+
+<Note>
+  Each save increments the draft revision number. You can browse revision history from the project settings panel.
+</Note>
+
+## Step 6 — Preview and deploy
+
+<Steps>
+  <Step title="Generate a preview">
+    Click **Preview** in the publish controls. The dashboard builds a release from your current draft and returns a time-limited preview URL. Share this link with reviewers.
+  </Step>
+  <Step title="Review the preview viewer">
+    Open the preview URL to see the viewer exactly as end users will see it: step controls, parts panel, tools panel, and camera animations all active.
+  </Step>
+  <Step title="Deploy to live">
+    When the preview looks correct, click **Deploy Live**. The dashboard promotes the preview release to the live URL for your project.
+  </Step>
+</Steps>
+
+Your live viewer URL follows the pattern:
+
+```
+/viewer/live/{companyId}/{productId}
+```
+
+Share this URL with end users. It serves the published manifest until you deploy a new release.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="GLB requirements" icon="cube" href="/guides/glb-requirements">
+    Understand exactly what the pipeline validator checks and how to fix common Blender export issues.
+  </Card>
+  <Card title="Timeline steps in depth" icon="timeline" href="/guides/timeline-steps">
+    Learn all timeline step fields, camera overrides, and step ordering.
+  </Card>
+  <Card title="Parts and tools" icon="wrench" href="/guides/parts-and-tools">
+    Manage the parts and tools catalog and assign them to steps.
+  </Card>
+  <Card title="API reference" icon="code" href="/api-reference/introduction">
+    Automate project management with the REST API.
+  </Card>
+</CardGroup>

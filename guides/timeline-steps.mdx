@@ -1,0 +1,81 @@
+---
+title: "Timeline steps"
+description: "Map frame ranges in your model's animation to named assembly steps with camera positions, colors, and text."
+---
+
+The timeline editor lets you divide a model's animation into discrete steps that the viewer presents to end users one at a time.
+
+## Step anatomy
+
+Each step has the following fields:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | yes | Stable unique identifier for the step. Generated automatically. |
+| `order` | number | yes | Display order in the viewer (1-based). |
+| `name` | string | yes | Short title shown in the step controls bar. Keep under ~40 characters. |
+| `stepText` | string | no | Longer description rendered in the step detail panel. |
+| `startFrame` | number | yes | First frame of the animation segment for this step. |
+| `endFrame` | number | yes | Last frame of the animation segment for this step. |
+| `color` | string | no | Optional color label for the step in the timeline editor (CSS color string). |
+| `camera.position` | `[x, y, z]` | no | World-space camera position to use when this step is active. |
+| `camera.target` | `[x, y, z]` | no | World-space camera look-at target when this step is active. |
+| `animation.clip` | string | no | Name of a specific animation clip to play for this step. |
+
+## Adding and editing steps
+
+### Add a step
+
+In the timeline editor at the bottom of the viewport:
+1. Click **Add Step** to insert a new step at the current playhead position.
+2. The step is created with a default frame range. Drag the left and right boundary handles to adjust `startFrame` and `endFrame`.
+
+### Edit a step
+
+Click a step block in the timeline to open its detail editor. You can change the name, stepText, color, and camera override from this panel.
+
+### Delete a step
+
+Select a step and click the **Delete** icon. The step is removed from the timeline.
+
+### Reorder steps
+
+Drag steps left or right in the timeline, or use the order field in the detail editor. The viewer presents steps in ascending `order` value.
+
+## Camera overrides
+
+When a step has a `camera.position` and `camera.target`, the viewer transitions the camera to that position when the user navigates to the step. This lets you focus the camera on the relevant part of the model for each step.
+
+```typescript
+// Example camera override
+{
+  camera: {
+    position: [2.5, 1.8, 3.0],
+    target: [0.0, 0.5, 0.0]
+  }
+}
+```
+
+If a step has no camera override, the viewer continues from the camera position defined by the model's animation at that frame.
+
+## Frame ranges and animation
+
+`startFrame` and `endFrame` map directly to frames in the model's GLB animation. The viewer scrubs to `startFrame` when the user enters a step and plays to `endFrame` as the step animation.
+
+<Note>
+  Frame ranges must not overlap. If two steps share a frame, the behavior is undefined. The editor warns you when ranges overlap.
+</Note>
+
+## Step ordering rules
+
+- Steps are rendered in ascending `order` value.
+- The viewer's **Previous** and **Next** buttons navigate between steps in order.
+- Gaps in frame numbers between steps are allowed — the animation scrubs to the next step's `startFrame` when the user advances.
+
+## Saving steps
+
+Click **Save** in the toolbar to persist the current timeline steps to the server as a new draft revision. The draft revision number increments with each save.
+
+<Tip>
+  Save frequently. The dashboard does not auto-save. Each save creates a new revision you can roll back to from the revision history panel.
+</Tip>

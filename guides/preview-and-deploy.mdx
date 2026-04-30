@@ -1,0 +1,96 @@
+---
+title: "Preview and deploy"
+description: "Generate a time-limited preview link for review, then promote your release to the public live viewer URL."
+---
+
+Publishing happens in two steps: **Preview** (a time-limited private link) and **Deploy** (the permanent public URL). This gives you the opportunity to review the viewer before making it accessible to end users.
+
+## Prerequisites
+
+Before you can preview or deploy, your project must have:
+- At least one timeline step saved in the current draft
+- A valid model loaded into the viewer
+
+## Generating a preview
+
+Click **Preview** in the publish controls panel. The dashboard:
+
+1. Reads the current draft revision
+2. Builds a manifest from the draft's timeline steps, visibility assignments, tools, and parts
+3. Returns a signed preview URL
+
+The preview URL follows this pattern:
+
+```
+/viewer/preview/{companyId}/{productId}?token={previewToken}
+```
+
+The preview token is time-limited. Share it with reviewers — the link expires after a set period.
+
+<Note>
+  If the draft has not changed since the last preview build, the dashboard reuses the existing release rather than building a new one.
+</Note>
+
+### Preview rate limit
+
+The preview endpoint is rate-limited to **5 requests per minute** per project. If you hit this limit, wait 60 seconds before generating another preview.
+
+## Reviewing the preview
+
+Open the preview URL in a browser. You see the full viewer experience:
+
+- Step controls at the bottom with Previous / Next navigation
+- Camera animations playing per step
+- Parts and Tools panels in the floating toolbar
+- Visibility assignments applied to each step
+
+If anything needs adjustment, return to the dashboard, make changes, save the draft, and generate a new preview.
+
+## Deploying to live
+
+When the preview looks correct, click **Deploy Live** in the publish controls. The dashboard:
+
+1. Promotes the current preview release to the live URL
+2. Returns a job ID you can poll to track progress
+
+The live viewer URL is permanent and associated with your project:
+
+```
+/viewer/live/{companyId}/{productId}
+```
+
+### Live deployment rate limit
+
+The deploy endpoint is rate-limited to **3 requests per minute** per project.
+
+### Tracking a deploy job
+
+After clicking **Deploy Live**, the response includes a `jobId`. You can check the job status at:
+
+```
+GET /api/admin/viewer-projects/{companyId}/{productId}/jobs?jobId={jobId}
+```
+
+Job statuses:
+
+| Status | Meaning |
+|--------|---------|
+| `queued` | Job is waiting to run |
+| `running` | Job is in progress |
+| `succeeded` | Deployment is complete — live URL is updated |
+| `failed` | Deployment failed — check `errorMessage` |
+| `cancelled` | Job was cancelled |
+
+## Project states
+
+After deploying, your project transitions through the following states:
+
+| State | Meaning |
+|-------|---------|
+| `IN_PROGRESS` | No live deployment yet — project is being built |
+| `UPDATED` | A new draft has been saved since the last live deployment |
+| `ACTIVE` | The live deployment is current — no pending changes |
+
+## Rolling back
+
+To roll back to a previous release, use the [list releases](/api-reference/viewer-project/list-releases) endpoint to find an earlier release ID, then call the [deploy live](/api-reference/viewer-project/deploy-live) endpoint with `sourceReleaseId` set to that release.

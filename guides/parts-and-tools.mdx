@@ -1,0 +1,83 @@
+---
+title: "Parts and tools"
+description: "Add the physical parts and tools needed for each assembly step so users know what to have ready."
+---
+
+The viewer can show a **Parts** panel and a **Tools** panel during each step. Populate these panels by assigning parts and tools to your project, then tagging each timeline step with the items the user needs.
+
+## Parts
+
+A **part** represents a physical component used in the assembly — a frame arm, a motor housing, a battery pack, and so on.
+
+### Part fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | yes | Unique identifier for the part (e.g. `arm-frame-left`). |
+| `name` | string | yes | Display name shown in the viewer panel. |
+| `code` | string | yes | Part number or SKU (e.g. `AF-L-001`). |
+| `icon` | string | yes | Material Symbols icon name displayed next to the part name. |
+| `description` | string | no | Optional description shown in the part detail view. |
+| `category` | string | no | Category label for grouping parts (e.g. `Frame`, `Electronics`). |
+| `imageUrl` | string | no | URL of a product image shown in the panel. |
+| `available` | boolean | no | Whether the part is currently in stock. Defaults to `true`. |
+
+### Example parts
+
+```typescript
+[
+  { id: "arm-frame-left",   name: "Arm Frame Left",         code: "AF-L-001",    icon: "view_in_ar",              category: "Frame",       available: true },
+  { id: "flight-controller", name: "Flight Controller",     code: "FC-PRO-7",    icon: "memory",                  category: "Electronics", available: true },
+  { id: "battery-pack",      name: "Battery Pack",          code: "BP-6S-5000",  icon: "battery_full",            category: "Power",       available: true },
+  { id: "gps-module",        name: "GPS Module",            code: "GPS-M8N",     icon: "my_location",             category: "Navigation",  available: true },
+]
+```
+
+## Tools
+
+A **tool** represents an instrument needed to perform a step — a torque wrench, soldering station, digital multimeter, and so on.
+
+### Tool fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | yes | Unique identifier for the tool (e.g. `torque-wrench`). |
+| `name` | string | yes | Display name shown in the viewer panel. |
+| `code` | string | yes | Tool number or model code (e.g. `TW-450-D`). |
+| `icon` | string | yes | Material Symbols icon name. |
+| `description` | string | no | Optional description. |
+| `category` | string | no | Category label (e.g. `Assembly`, `Calibration`). |
+| `imageUrl` | string | no | URL of a tool image. |
+| `available` | boolean | no | Whether the tool is available. Defaults to `true`. |
+
+### Example tools
+
+```typescript
+[
+  { id: "torque-wrench",      name: "Torque Wrench",         code: "TW-450-D",    icon: "build",         category: "Assembly",     available: true },
+  { id: "digital-multimeter", name: "Digital Multimeter",    code: "DM-PRO",      icon: "rebase_edit",   category: "Diagnostics",  available: true },
+  { id: "laser-calibrator",   name: "Laser Calibrator",      code: "LC-900-X",    icon: "biotech",       category: "Calibration",  available: true },
+  { id: "soldering-station",  name: "Soldering Station",     code: "SS-400-W",    icon: "flare",         category: "Electrical",   available: true },
+]
+```
+
+## Assigning parts and tools to steps
+
+Parts and tools are project-level catalogs. Assigning them to steps happens in the timeline editor:
+
+1. Select a step in the timeline.
+2. In the step detail panel, click **Add Part** or **Add Tool**.
+3. Choose from the project's catalog.
+4. The selected items are saved with the step's draft data when you save.
+
+The viewer automatically shows the relevant parts and tools in the side panels when the user is on that step.
+
+## Managing the catalog
+
+The full parts and tools catalogs are saved as part of the project draft — the same `PUT /api/admin/viewer-projects/{companyId}/{productId}?action=draft` request that saves timeline steps also saves the catalog arrays.
+
+To add new items to the catalog, update the `parts` or `tools` arrays in the draft payload. To remove an item, remove it from the array. Any step that referenced the removed item will no longer show it.
+
+<Note>
+  Part and tool images are served from the project's asset store. Use the [asset upload flow](/api-reference/assets/upload-intent) to upload images and reference the returned `assetUrl` in the `imageUrl` field.
+</Note>

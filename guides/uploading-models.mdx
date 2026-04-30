@@ -1,0 +1,71 @@
+---
+title: "Uploading models"
+description: "How to ingest a validated GLB into the viewer and replace an existing model."
+---
+
+## Opening the ingest dialog
+
+Click the **Upload Model** button in the dashboard header to open the **Pipeline GLB Ingest** dialog. You can also drag a `.glb` file directly onto the viewport — the dialog opens automatically.
+
+## Selecting a file
+
+You can provide a file in two ways:
+
+- **Click to browse** — click the **Choose GLB file** input and select a `.glb` from your filesystem.
+- **Drag and drop** — drag a `.glb` from your file manager onto the drop zone inside the dialog.
+
+Only files with the `.glb` extension are accepted. Attempting to select any other file type immediately shows an error:
+
+> Pipeline ingest must use the `.glb` extension.
+
+## Validation progress
+
+As soon as a valid `.glb` is selected, the validator starts automatically. The **Analysis Progress** section shows the current stage:
+
+| Stage label | What is happening |
+|-------------|-------------------|
+| Ready for pipeline ingest | No file selected yet |
+| Reading file | Loading binary data from disk |
+| Validating binary | Checking GLB header and chunk structure |
+| Parsing scene | Loading scene graph with the glTF runtime |
+| Applying pipeline rules | Running material, texture, camera, and extension checks |
+| Validation complete | Report is ready — status is `pass` or `fail` |
+| Validation failed | One or more blocking errors were found |
+
+## Reading the report
+
+After validation completes, the report shows:
+
+**Status badge** — green `PASS` or red `FAIL`.
+
+**Scene summary** — quick stats about the file:
+- Scene count
+- Camera animation count and animated camera node count
+- Mesh, material, and texture counts
+- Material breakdown (standard / physical / unlit)
+- Alpha blend and double-sided material counts
+
+**Validation issues** — issues grouped by category. Each issue shows:
+- A human-readable message
+- The glTF path that triggered the issue (e.g. `materials[2].extensions`)
+- Blender fix guidance where applicable
+
+See [GLB requirements](/guides/glb-requirements) for the full list of issue codes and how to resolve them in Blender.
+
+## Loading the model
+
+The **Load Into Viewer** button is enabled only when:
+1. A file has been selected and analyzed
+2. The validation report returns `canLoadIntoScene = true`
+
+A file with only warnings (no blocking errors) can still be loaded. A file with any `error`-severity issue cannot be loaded.
+
+Click **Load Into Viewer** to ingest the model. The dialog closes and the 3D viewport updates with your new model.
+
+## Replacing an existing model
+
+You can replace the current model at any time by opening the ingest dialog again and loading a new file. The timeline editor clears when a new model is loaded — existing draft steps are not automatically re-mapped to the new model's frame range.
+
+<Warning>
+  Loading a new model does not automatically save your draft. If you have unsaved timeline changes, save them before replacing the model, or they will be lost.
+</Warning>

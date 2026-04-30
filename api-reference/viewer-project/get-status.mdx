@@ -1,0 +1,88 @@
+---
+title: "Get project status"
+description: "Retrieve the current status of a viewer project, including state, live/preview URLs, and release IDs."
+---
+
+## Endpoint
+
+```
+GET /api/admin/viewer-projects/{companyId}/{productId}
+```
+
+**Required permission:** `admin`
+
+If the project does not yet exist, it is created automatically and returned in `IN_PROGRESS` state.
+
+## Path parameters
+
+<ParamField path="companyId" type="string" required>
+  The company identifier (canonical slug format: lowercase alphanumeric with hyphens).
+</ParamField>
+
+<ParamField path="productId" type="string" required>
+  The product identifier (canonical slug format: lowercase alphanumeric with hyphens).
+</ParamField>
+
+## Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "companyId": "weijia-construction",
+    "productId": "sunshade-louver-pergola",
+    "state": "ACTIVE",
+    "hasLiveDeployment": true,
+    "currentPreviewReleaseId": "rel_preview_abc123",
+    "currentLiveReleaseId": "rel_preview_xyz789",
+    "previewUrl": "https://example.com/viewer/preview/weijia-construction/sunshade-louver-pergola",
+    "liveUrl": "https://example.com/viewer/live/weijia-construction/sunshade-louver-pergola",
+    "contentVersion": "content_1a2b3c4d",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+<ResponseField name="companyId" type="string">
+  The company identifier for the project.
+</ResponseField>
+
+<ResponseField name="productId" type="string">
+  The product identifier for the project.
+</ResponseField>
+
+<ResponseField name="state" type="string">
+  Current project state. One of `IN_PROGRESS`, `UPDATED`, or `ACTIVE`.
+
+  - `IN_PROGRESS` — no live deployment exists yet
+  - `UPDATED` — a draft has been saved since the last live deployment
+  - `ACTIVE` — the live deployment is current
+</ResponseField>
+
+<ResponseField name="hasLiveDeployment" type="boolean">
+  Whether the project has ever been deployed to the live URL.
+</ResponseField>
+
+<ResponseField name="currentPreviewReleaseId" type="string | null">
+  ID of the most recent preview release, or `null` if no preview exists.
+</ResponseField>
+
+<ResponseField name="currentLiveReleaseId" type="string | null">
+  ID of the currently live release, or `null` if not yet deployed.
+</ResponseField>
+
+<ResponseField name="previewUrl" type="string | null">
+  The preview viewer URL for this project.
+</ResponseField>
+
+<ResponseField name="liveUrl" type="string | null">
+  The live viewer URL for this project.
+</ResponseField>
+
+<ResponseField name="contentVersion" type="string | null">
+  A content hash string representing the current draft version.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string | null">
+  ISO 8601 timestamp of the last project update.
+</ResponseField>

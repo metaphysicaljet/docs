@@ -1,0 +1,113 @@
+---
+title: "GLB requirements"
+description: "What the pipeline validator checks and how to fix common Blender export issues before uploading your model."
+---
+
+The Animator Dashboard applies a strict validation pipeline to every GLB file before it can be loaded into the viewer. Standard glTF validity is not sufficient — the file must also satisfy a set of pipeline-specific rules.
+
+## Supported format
+
+| Requirement | Detail |
+|-------------|--------|
+| File extension | `.glb` (binary glTF) |
+| glTF version | 2.0 |
+| Scene count | Exactly 1 scene |
+| Camera animations | Exactly 1 animated camera track |
+
+<Warning>
+  `.gltf` text-format files are not accepted. Export as **binary glTF (.glb)** from Blender.
+</Warning>
+
+## Validation stages
+
+When you upload a file, the validator runs five stages in sequence:
+
+<Steps>
+  <Step title="Reading file">
+    Reads the raw bytes and confirms the file is accessible.
+  </Step>
+  <Step title="Validating binary">
+    Parses the GLB header and chunk layout. Checks the glTF version and records required and used extensions.
+  </Step>
+  <Step title="Parsing scene">
+    Loads the full scene graph using the Three.js glTF loader. Discovers meshes, materials, textures, cameras, and animation clips.
+  </Step>
+  <Step title="Applying pipeline rules">
+    Runs the full compatibility rule set: material checks, texture slot checks, extension checks, camera animation checks, and scene topology checks.
+  </Step>
+  <Step title="Validation complete">
+    Issues a `pass` or `fail` result with a summary and a list of issues grouped by category.
+  </Step>
+</Steps>
+
+## Validation report
+
+After analysis the dashboard shows:
+
+- **PASS / FAIL** badge
+- A summary of scene statistics (mesh count, material count, texture count, animated camera clips, etc.)
+- A list of issues grouped by category (Materials, Textures, Animations, Scene, Extensions)
+- For each issue: a message, the glTF path that triggered it, and Blender fix guidance
+
+## Material rules
+
+| Issue code | Severity | Meaning | Blender fix |
+|------------|----------|---------|-------------|
+| `material.extension.rejected` | error | Material uses a glTF extension that the pipeline does not support | Switch to core Principled BSDF inputs, or bake the effect before export |
+| `material.runtime.unsupported` | error | Material class is not renderable by the viewer runtime | Simplify to a supported Principled BSDF glTF export path |
+| `material.alpha.blend` | error | Material uses `BLEND` alpha mode | Use opaque materials in Phase 1, or switch to `MASK` alpha mode if transparency is required |
+
+## Texture rules
+
+| Issue code | Severity | Meaning | Blender fix |
+|------------|----------|---------|-------------|
+| `texture.slot.missing-image` | error | A texture slot references an image that is missing from the GLB | Reconnect or rebake the missing texture in Blender, then re-export |
+| `texture.slot.missing-source` | error | A texture slot has no source image index | Same as above |
+| `texture.mime.unsupported` | error | Texture uses an image format other than PNG or JPEG | Re-export the texture as PNG or JPEG |
+
+## Camera animation rules
+
+| Issue code | Severity | Meaning | Blender fix |
+|------------|----------|---------|-------------|
+| `camera.animation.count` | error | The GLB contains zero or more than one animated camera clip | Export exactly one authoritative animated camera path |
+| `camera.node.count` | error | The GLB contains zero or more than one animated camera node | Same — consolidate to a single camera object with one animation |
+
+<Note>
+  The pipeline expects **exactly one** animated camera. If your Blender scene has multiple camera objects or multiple NLA tracks baked for a camera, consolidate them before exporting.
+</Note>
+
+## Supported glTF extensions
+
+The following glTF extensions are supported by the viewer runtime. Any other extension in the `extensionsRequired` list will cause a validation failure.
+
+- `KHR_draco_mesh_compression`
+- `KHR_materials_unlit`
+- `KHR_texture_transform`
+- `KHR_mesh_quantization`
+
+Extensions listed only in `extensionsUsed` (not `extensionsRequired`) are handled gracefully — the validator may issue a warning but will not fail the upload.
+
+## Recommended Blender export settings
+
+```
+File > Export > glTF 2.0 (.glb/.gltf)
+
+Format:        glTF Binary (.glb)
+Include:       Selected Objects (or Scene)
+Transform:     +Y Up
+Geometry:      Apply Modifiers ✓
+               UVs ✓
+               Normals ✓
+               Tangents (optional)
+               Vertex Colors (optional)
+               Materials ✓
+Animation:     Export ✓
+               Limit to Playback Range ✓
+               Always Export Keyframes (optional)
+               NLA Strips: Bake ✓  (one strip per camera)
+Camera:        Export Camera ✓
+```
+
+<Tip>
+  Before exporting, remove all cameras except the one intended for the cinematic animation. This prevents the `camera.node.count` error.
+</Tip>

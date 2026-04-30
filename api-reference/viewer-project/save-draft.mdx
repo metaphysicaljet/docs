@@ -1,0 +1,122 @@
+---
+title: "Save draft"
+description: "Save a new draft revision with updated timeline steps, visibility assignments, tools, and parts."
+---
+
+## Endpoint
+
+```
+PUT /api/admin/viewer-projects/{companyId}/{productId}?action=draft
+```
+
+**Required permission:** `editor`
+
+Saves the provided data as a new draft revision. You must supply the `expectedRevision` matching the current revision to prevent overwriting concurrent edits. If another client has saved a newer revision, the request returns `409 Conflict`.
+
+## Path parameters
+
+<ParamField path="companyId" type="string" required>
+  The company identifier.
+</ParamField>
+
+<ParamField path="productId" type="string" required>
+  The product identifier.
+</ParamField>
+
+## Request body
+
+```json
+{
+  "expectedRevision": 4,
+  "timelineSteps": [
+    {
+      "id": "step-1",
+      "order": 1,
+      "name": "Base Assembly",
+      "stepText": "Assemble the base frame and secure mounting points.",
+      "startFrame": 0,
+      "endFrame": 120,
+      "color": "#38bdf8",
+      "camera": {
+        "position": [2.5, 1.8, 3.0],
+        "target": [0.0, 0.5, 0.0]
+      }
+    }
+  ],
+  "visibilityAssignments": [
+    {
+      "stepId": "step-1",
+      "objectId": "arm_frame_left",
+      "included": true
+    }
+  ],
+  "tools": [
+    {
+      "id": "torque-wrench",
+      "name": "Torque Wrench",
+      "code": "TW-450-D",
+      "icon": "build",
+      "category": "Assembly",
+      "available": true
+    }
+  ],
+  "parts": [
+    {
+      "id": "arm-frame-left",
+      "name": "Arm Frame Left",
+      "code": "AF-L-001",
+      "icon": "view_in_ar",
+      "category": "Frame",
+      "available": true
+    }
+  ],
+  "lastFrame": 360
+}
+```
+
+<ParamField body="expectedRevision" type="number" required>
+  The revision number of the draft you are updating. Fetch the current draft to get this value. The request fails with `409` if this does not match the server's current revision.
+</ParamField>
+
+<ParamField body="timelineSteps" type="array">
+  Full replacement array of timeline steps. Omit to keep the existing steps unchanged.
+</ParamField>
+
+<ParamField body="visibilityAssignments" type="array">
+  Full replacement array of visibility assignments. Omit to keep existing assignments unchanged.
+</ParamField>
+
+<ParamField body="tools" type="array">
+  Full replacement tools catalog. Omit to keep the existing tools unchanged.
+</ParamField>
+
+<ParamField body="parts" type="array">
+  Full replacement parts catalog. Omit to keep the existing parts unchanged.
+</ParamField>
+
+<ParamField body="lastFrame" type="number">
+  The final frame of the model's animation. Omit to keep the existing value.
+</ParamField>
+
+## Response
+
+Returns the saved draft snapshot (same shape as [Get draft](/api-reference/viewer-project/get-draft)).
+
+## Conflict handling
+
+If `expectedRevision` does not match the server's current revision:
+
+```json
+{
+  "success": false,
+  "error": "Draft revision mismatch.",
+  "code": "DRAFT_CONFLICT",
+  "currentRevision": 7
+}
+```
+
+Fetch the latest draft, merge your changes, and retry with `expectedRevision` set to `7`.
+
+<Note>
+  If the submitted data is identical to the current draft, the server returns the existing draft without incrementing the revision number.
+</Note>
