@@ -45,5 +45,8 @@
       "dark": "#000000"
     }
   },
-  "favicon": "/images/floweroflife.svg"
+  "favicon": "/images/floweroflife.svg",
+  "navbar": {
+    "links": []
+  }
 }
